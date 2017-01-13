@@ -1,6 +1,5 @@
 from sklearn import datasets
 from numpy.random import permutation
-import sys
 
 class HardCoded(object):
 
