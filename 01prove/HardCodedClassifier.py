@@ -1,22 +1,6 @@
 from sklearn import datasets
 from numpy.random import permutation
-
-# Load in data
-iris = datasets.load_iris()
-
-# Randomize my data
-indices = permutation(len(iris.data))
-
-
-length = len(iris.data)
-trainingSize = int(.7 * length)
-
-
-training_data = iris.data[indices[:trainingSize]]
-training_target = iris.target[indices[:trainingSize]]
-
-testing_data = iris.data[indices[trainingSize:length]]
-testing_target = iris.target[indices[trainingSize:length]]
+import sys
 
 class HardCoded(object):
 
@@ -32,14 +16,44 @@ class HardCoded(object):
 
         return predictions
 
-hard_coded_classifier = HardCoded()
-prediction_result = hard_coded_classifier.predict(testing_data)
+def main():
+    size = input('How much of the data should be used for training? (1 - 100): ')
+    if size.isdigit():
+        size = int(size) * .01
+    else:
+        print("You either did not enter a number or your response was invalid.")
+        print("Setting data set size to 70%.\n")
+        size = .7
 
-# Calculate accuracy
-result = 0.0
-for i in range(len(prediction_result)):
-    if prediction_result[i] == testing_target[i]:
-        result += 1
+    # Load in data
+    iris = datasets.load_iris()
 
-result = (result/len(testing_target)) * 100
-print("The predictive accuracy of this program is " + str(result) + "%.")
+    # Randomize my data
+    indices = permutation(len(iris.data))
+
+
+    length = len(iris.data)
+    trainingSize = int(size * length)
+
+
+    training_data = iris.data[indices[:trainingSize]]
+    training_target = iris.target[indices[:trainingSize]]
+
+    testing_data = iris.data[indices[trainingSize:length]]
+    testing_target = iris.target[indices[trainingSize:length]]
+
+
+
+    hard_coded_classifier = HardCoded()
+    prediction_result = hard_coded_classifier.predict(testing_data)
+
+    # Calculate accuracy
+    result = 0.0
+    for i in range(len(prediction_result)):
+        if prediction_result[i] == testing_target[i]:
+            result += 1
+
+    result = (result/len(testing_target)) * 100
+    print("The predictive accuracy of this program is " + str(result) + "%.")
+
+main()
