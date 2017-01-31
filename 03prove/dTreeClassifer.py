@@ -1,25 +1,3 @@
-"""
-Translation of Marsland Code of dTree
-    MINE          Marsland
-    attributes =  featureNames (The column name)
-    data       =  the attribute values
-    target     =  class (The target values)
-
-
-Pre Processing:
-    Create a list of possible classes
-
-
-ID3 Classifier (Examples, Target_Attribute, Candidate_Attributes)
-    Create a Root node for the tree. (This function is recursive)
-    If all examples have the same value of the Target_Attribute,
-        Return the Root node with the label = Target_Attribute
-    elsIf the list of Candidate_Attributes is empty,
-        Return the Root node with the label = most common Target_Attribute in Examples
-    else
-
-"""
-
 import numpy as np
 import copy
 from collections import OrderedDict
@@ -33,7 +11,6 @@ def tree_classifier_debugger(data, attribute, targets):
     print("Attribute: ", attribute)
     print("Targets: ", [i[-1] for i in data])
     print("Unique Targets: ", np.unique(targets))
-    print("Length of Unique Targets: ", len(np.unique(targets)))
 
 
 class Node:
@@ -68,11 +45,10 @@ class TreeClassifier:
         for value in values:
             # Group rows by matching values
             groups = [instance for instance in data if instance[attribute] == value]
-
             # Calculate the frequency of each target in each group
             target_frequencies = OrderedDict()
             for group in groups:
-                target_frequencies[group[-1]] = target_frequencies.get(group, 0) + 1
+                target_frequencies[group[-1]] = target_frequencies.get(group[-1], 0) + 1
 
             # Convert values to percentages
             groups_len = len(groups)
@@ -91,9 +67,10 @@ class TreeClassifier:
         # Enumerate columns in data
         attributes = list(range(len(data[0])))
 
+        self.default = targets[0]
         # convert data and targets toList
-        t_data = data.toList()
-        t_targets = targets.toList()
+        t_data = data.tolist()
+        t_targets = targets.tolist()
 
         # Join targets with data
         for i in range(len(t_data)):
@@ -104,6 +81,15 @@ class TreeClassifier:
 
         # Display the tree
         self.display_tree(self.root, 0)
+
+    def traverse_tree(self, element, node):
+        if element[node.attribute] not in node.branches.keys():
+            return 0
+        branch = node.branches[element[node.attribute]]
+        if isinstance(branch, Node):
+            return self.traverse_tree(element, branch)
+        else:
+            return node.branches[element[node.attribute]]
 
     def display_tree(self, node, level):
         indent = "    "
@@ -120,18 +106,20 @@ class TreeClassifier:
         else:
             print(indent, node)
 
-    def make_tree(self, data, attributes, targets):
+    def predict(self, data):
+        result = []
+        for element in data:
+            result.append(self.traverse_tree(element, self.root))
+        return result
+
+    def make_tree(self, data, attributes):
         # Create a Root Node for the tree. (This is a recursive function BTW)
         node = Node()
 
-        # Get size of data
-        n_data = len(data)
-        # Get size of attributes
-        n_attributes = len(attributes)
-
         # Count the occurrences of each target.
         target_counts = OrderedDict()
-        for item in targets:
+        trans_data = np.transpose(data)
+        for item in trans_data[-1]:
             target_counts[item] = target_counts.get(item, 0) + 1
 
         # If all targets are the same
@@ -139,11 +127,12 @@ class TreeClassifier:
             # Return the target
             return list(target_counts.keys())[0]
         # If data is empty
-        elif n_data == 0 or n_attributes == 0:
+        elif len(data) == 0:
+            return self.default
+        elif len(attributes) == 0:
             # Return default target
-            # print("Data is or Attributes is Empty")
-            # tree_classifier_debugger(data, attributes, targets)
-            return max(target_counts.iteritems, key=operator.itemgetter(1))[0]
+            tree_classifier_debugger(data, attributes, target_counts.keys)
+            return max(target_counts.items(), key=operator.itemgetter(1))[0]
 
         # Implicit Else
         entropy_dict = {}
@@ -153,15 +142,16 @@ class TreeClassifier:
 
         min_entropy = min(iter(entropy_dict.values()))
         # Select column with the least entropy
-        node.attribute = [i for i, v in iter(entropy_dict.items()) if v == min_entropy]
+        node.attribute = [i for i, v in iter(entropy_dict.items()) if v == min_entropy][0]
 
         values = np.transpose(data)[node.attribute]
 
         # Isolate the values for each branch for recursive tree generation
         for value in values:
-            t_data = [row for row in range(len(data)) if row[node.attribute] == value]
+            t_data = [row for row in data if row[node.attribute] == value]
 
-            t_labels = copy.deepcopy(attributes).remove(node.attribute)
+            t_labels = copy.deepcopy(attributes)
+            t_labels.remove(node.attribute)
             # Recurse
             node.branches[value] = self.make_tree(t_data, t_labels)
         return node
