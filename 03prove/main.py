@@ -6,7 +6,7 @@ from sklearn import preprocessing as pp
 from dTreeClassifer import TreeClassifier
 # For comparison
 from sklearn import tree
-from csvProcessorTwo import process_csv
+from csvProcessor import process_csv
 
 
 def calculate_accuracy(predictions, test, targets):
