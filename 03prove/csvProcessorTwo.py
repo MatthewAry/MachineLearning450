@@ -1,17 +1,7 @@
 import numpy as np
-from sklearn import preprocessing as pp
 
 
 def process_csv(csv):
-    transposed_csv = np.transpose(csv)
-    for i in range(len(transposed_csv)):
-        if any(x.isalpha() for x in transposed_csv[i]):
-            le = pp.LabelEncoder()
-            le.fit(transposed_csv[i])
-            transposed_csv[i] = le.transform(transposed_csv[i])
-
-    csv = np.transpose(transposed_csv)
-    csv = np.array(csv)
     response = ""
     while response.lower() != "yes" and response.lower() != "no":
         response = input("Would you like to bin the data? (yes/no): ")
