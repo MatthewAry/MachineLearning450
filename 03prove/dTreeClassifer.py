@@ -116,6 +116,10 @@ class TreeClassifier:
         # Create a Root Node for the tree. (This is a recursive function BTW)
         node = Node()
 
+        # If data is empty
+        if len(data) == 0:
+            return self.default
+
         # Count the occurrences of each target.
         target_counts = OrderedDict()
         trans_data = np.transpose(data)
@@ -126,12 +130,10 @@ class TreeClassifier:
         if len(target_counts) == 1:
             # Return the target
             return list(target_counts.keys())[0]
-        # If data is empty
-        elif len(data) == 0:
-            return self.default
+
         elif len(attributes) == 0:
             # Return default target
-            tree_classifier_debugger(data, attributes, target_counts.keys)
+            #tree_classifier_debugger(data, attributes, target_counts.keys)
             return max(target_counts.items(), key=operator.itemgetter(1))[0]
 
         # Implicit Else

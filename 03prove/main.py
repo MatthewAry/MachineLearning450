@@ -1,14 +1,14 @@
 import sys
 import numpy as np
 from sklearn import datasets
-import csv
 # My Tree Classifier
 from dTreeClassifer import TreeClassifier
 # For comparison
 from sklearn import tree
-from csvProcessor import process_csv
+from csvProcessorTwo import process_csv
 
-def calculateAccuracy(predictions, test, targets):
+
+def calculate_accuracy(predictions, test, targets):
     correct = 0
     for (prediction, actual) in zip(predictions, test):
 
@@ -17,13 +17,15 @@ def calculateAccuracy(predictions, test, targets):
     # Display accuracy
     print(correct / test.size * 100)
 
+
 def main(argv):
     # Load data
     if len(argv) >= 2:
         csv = np.genfromtxt(argv[1], delimiter=",", dtype=str)
         # We might have to delimit by spaces!
+        # The first column would be a row count then.
         if len(csv.shape) < 2:
-            csv = np.genfromtxt(argv[1], dtype=str)
+            csv = np.delete(np.genfromtxt(argv[1], dtype=str), 0, 1)
 
         data = csv[:, :-1]
         targets = csv[:, -1]
@@ -57,8 +59,8 @@ def main(argv):
     sci_d_tree = sci_d_tree.fit(data[train], targets[train])
     sci_predictions = sci_d_tree.predict(data[test])
 
-    calculateAccuracy(predictions, test, targets)
-    calculateAccuracy(sci_predictions, test, targets)
+    calculate_accuracy(predictions, test, targets)
+    calculate_accuracy(sci_predictions, test, targets)
 
 
 # To make sure main is ran only when ran, not loaded as well
