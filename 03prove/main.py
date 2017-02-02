@@ -20,6 +20,11 @@ def calculate_accuracy(predictions, test, targets):
 
 def main(argv):
     # Load data
+
+    response = ""
+    while response.lower() != "yes" and response.lower() != "no":
+        response = input("Is the key on the left? (yes/no): ")
+
     if len(argv) >= 2:
         csv = np.genfromtxt(argv[1], delimiter=",", dtype=str)
         # We might have to delimit by spaces!
@@ -27,8 +32,13 @@ def main(argv):
         if len(csv.shape) < 2:
             csv = np.delete(np.genfromtxt(argv[1], dtype=str), 0, 1)
 
-        data = csv[:, :-1]
-        targets = csv[:, -1]
+        if response == "yes":
+            data = csv[:, :-1]
+            targets = csv[:, -1]
+        else:
+            data = csv[:, 1:]
+            targets = csv[:, 0]
+
     else:
         iris = datasets.load_iris()
         data = iris.data
@@ -56,6 +66,8 @@ def main(argv):
     predictions = classifier.predict(data[test])
 
     sci_d_tree = tree.DecisionTreeClassifier()
+    # print(data[train])
+    # print(targets[train])
     sci_d_tree = sci_d_tree.fit(data[train], targets[train])
     sci_predictions = sci_d_tree.predict(data[test])
 

@@ -48,4 +48,5 @@ def process_csv(csv):
                                 bin_num = k
 
                 csv[j][i] = bin_num
+
     return csv
