@@ -83,7 +83,9 @@ def main(argv):
     sci_d_tree = sci_d_tree.fit(data[train], targets[train])
     sci_predictions = sci_d_tree.predict(data[test])
 
+    print("My Decision Tree Accuracy")
     calculate_accuracy(predictions, test, targets)
+    print("Sklearn's Decision Tree Accuracy")
     calculate_accuracy(sci_predictions, test, targets)
 
 
