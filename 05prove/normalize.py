@@ -33,5 +33,6 @@ def normalize(data):
             le = pp.LabelEncoder()
             le.fit(transposed_data[i])
             transposed_data[i] = le.transform(transposed_data[i])
+    transposed_data = [list(map(float, x)) for x in transposed_data]
     data = np.transpose(transposed_data)
     return np.array(data)
