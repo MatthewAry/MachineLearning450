@@ -13,6 +13,9 @@ class NeuralNetwork:
         """Training Function Slug"""
         result = []
         for instance in train_data:
-            result = [[node.activation(instance)] for node in self.nodes]
+            row = []
+            for node in self.nodes:
+                row.append(int(bool(node.activation(instance))))
+            result.append(row)
 
         return result

@@ -12,6 +12,6 @@ class Neuron:
     def activation(self, instance):
         instance = instance.tolist()
         instance.append(self.bias_input)
+        print(instance)
         activations = np.dot(self.weights, instance)
-        print(activations)
         return np.where(activations > self.threshold)

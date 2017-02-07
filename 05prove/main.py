@@ -6,13 +6,24 @@ from NeuralNetwork import NeuralNetwork
 
 
 def main(argv):
+    inputs = {'-file': None, '-n': None}
+    for i, input in enumerate(argv):
+        if input in inputs:
+            if (i + 1) < len(argv):
+                if input == '-file':
+                    inputs[input] = argv[i + 1]
+                elif input == '-n':
+                    inputs[input] = int(argv[i + 1])
+    if inputs['-n'] is None:
+        inputs['-n'] = 5
+
     # Load data
-    if len(argv) >= 2:
-        csv = np.genfromtxt(argv[1], delimiter=",", dtype=str)
+    if inputs['-file'] is not None:
+        csv = np.genfromtxt(inputs['-file'], delimiter=",", dtype=str)
         # We might have to delimit by spaces!
         # The first column would be a row count then.
         if len(csv.shape) < 2:
-            csv = np.delete(np.genfromtxt(argv[1], dtype=str), 0, 1)
+            csv = np.delete(np.genfromtxt(inputs['-file'], dtype=str), 0, 1)
 
         response = ""
         while response.lower() != "yes" and response.lower() != "no":
@@ -42,8 +53,8 @@ def main(argv):
     test = perm[:index]
     train = perm[index:]
 
-    network = NeuralNetwork(len(data), len(data[0]))
-    network.train(data[train], targets[train])
+    network = NeuralNetwork(inputs['-n'], len(data[0]))
+    print(network.train(data[train], targets[train]))
 
 
 if __name__ == "__main__":
