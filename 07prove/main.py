@@ -3,6 +3,8 @@ import sys
 from sklearn import datasets
 from normalize import normalize
 from sklearn import preprocessing
+# # Requires 0.18.1
+# from sklearn.neural_network import MLPClassifier
 from NeuralNetwork import NeuralNetwork as Network
 from graphviz import Digraph
 import matplotlib.pyplot as plt
@@ -25,6 +27,8 @@ def main(argv):
     parser.add_argument('-e', '--error', dest='draw_error', action='store_true', help=error_description)
     epoch_description = "Set the number of epochs performed during training."
     parser.add_argument('-ep', '--epochs', help=epoch_description, type=int, required=True)
+    # sklearn_network_description = "Compare results with sklearn's neural network implementation."
+    # parser.add_argument('-c', '--compare', help=sklearn_network_description, action='store_true')
 
     args = parser.parse_args()
 
@@ -78,6 +82,17 @@ def main(argv):
 
     if args.draw_network:
         visualize(network, data)
+
+    # if args.compare:
+    #     mlp = MLPClassifier()
+    #     for i, instance in enumerate(data[train]):
+    #         mlp.fit(instance, targets[train][i])
+    #     result = mlp.predict(data[test])
+    #     correct_guesses = 0
+    #     for i, val in enumerate(result):
+    #         if targets[train][i] == val:
+    #             correct_guesses += 1
+    #     print("MLPClassifier Accuracy: ", correct_guesses / len(targets[train]) * 100, "%")
 
 
 def accuracy(data, targets, network):
