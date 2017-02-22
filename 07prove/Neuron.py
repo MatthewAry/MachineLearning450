@@ -15,12 +15,6 @@ class Neuron:
 
     def activation(self, instance):
         instance = list(instance)
-        # print("neruon instance: ", instance)
-        # print("neruon weight: ", self.weights)
         activations = np.dot(self.weights, instance)
-        # print("H: ", activations)
         self.output = 1.0 / (1.0 + math.exp(-activations))
-        # print("instance: ", instance)
-        # print("activation: ", self.output)
-        # print("weights: ", self.weights)
         return self.output
