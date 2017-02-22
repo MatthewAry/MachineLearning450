@@ -15,6 +15,7 @@ class Neuron:
 
     def activation(self, instance):
         instance = list(instance)
+        instance.append(-1)
         activations = np.dot(self.weights, instance)
         self.output = 1.0 / (1.0 + math.exp(-activations))
         return self.output

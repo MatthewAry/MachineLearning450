@@ -16,7 +16,7 @@ class NeuralNetwork:
 
         # The last layer needs to equal the number of targets.
         self.layers.append(Layer.Layer(num_targets, len(self.layers[-1].nodes)))
-        self.epochs = 2000
+        self.epochs = 1
         self.learning_rate = .3
         self.target_list = []
 
@@ -32,10 +32,8 @@ class NeuralNetwork:
             # If at input layer
             if layer_index == 0:
                 for neuron_index, neuron in enumerate(layer):
-                    instance.append(1)
                     layer_output.append(neuron.activation(instance))
             else:
-                outputs.append(-1)
                 for neuron_index, neuron in enumerate(layer):
                     layer_output.append(neuron.activation(outputs))
             outputs = layer_output
