@@ -46,6 +46,7 @@ def main(argv):
         targets = iris.target
 
     # Randomize the data
+    np.random.seed(0)
     perm = np.random.permutation(len(data))
 
     data = preprocessing.scale(np.array(data[perm]))
@@ -56,9 +57,11 @@ def main(argv):
     train = perm[index:]
 
     result = []
-
+    # print(list(data[train]))
+    # print(list(targets[train]))
     network = Network(len(data[0]), inputs['-n'], len(set(targets)))
     network.train(data[train], targets[train])
+
 
     correct_guesses = 0
 
@@ -69,9 +72,9 @@ def main(argv):
         if test_targets[i] == r:
             correct_guesses += 1
         result.append(r)
-    print(result)
-    print(list(test_targets))
-    print(correct_guesses / len(targets) * 100)
+    print("result:  ", result)
+    print("targets: ", list(test_targets))
+    print("Accuracy: ", correct_guesses / len(targets[test]) * 100)
 
     for j, layer in enumerate(network.layers):
         for i, node in enumerate(layer):
